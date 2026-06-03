@@ -11,14 +11,15 @@ const ROLE_DASHBOARDS: Record<string, string> = {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
-  const { supabaseResponse, user } = await updateSession(request)
+  const { supabaseResponse, user, role } = await updateSession(request)
 
   // Allow public routes without auth
   if (PUBLIC_ROUTES.some(route => pathname.startsWith(route))) {
     if (user) {
-      const role = user.app_metadata?.role as string
-      const dashboard = ROLE_DASHBOARDS[role] ?? '/login'
-      return NextResponse.redirect(new URL(dashboard, request.url))
+      const dashboard = ROLE_DASHBOARDS[role ?? ''] ?? '/login'
+      if (dashboard !== '/login') {
+        return NextResponse.redirect(new URL(dashboard, request.url))
+      }
     }
     return supabaseResponse
   }
@@ -29,8 +30,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Enforce role-based access
-  const role = user.app_metadata?.role as string
-  const allowedPrefix = ROLE_DASHBOARDS[role]
+  const allowedPrefix = ROLE_DASHBOARDS[role ?? '']
 
   if (allowedPrefix && !pathname.startsWith(allowedPrefix) && pathname !== '/') {
     return NextResponse.redirect(new URL(allowedPrefix, request.url))

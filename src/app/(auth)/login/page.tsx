@@ -21,8 +21,13 @@ export default function LoginPage() {
     setError(null)
     const { data, error: err } = await supabase.auth.signInWithPassword({ email, password })
     if (err) { setError('Email atau password salah.'); setLoading(false); return }
-    const role = data.user?.app_metadata?.role as string
-    router.push(ROLE_REDIRECT[role] ?? '/login')
+    let role = data.user?.app_metadata?.role as string | undefined
+    if (!role) {
+      const { data: profile } = await supabase
+        .from('profiles').select('role').eq('id', data.user!.id).single()
+      role = profile?.role ?? undefined
+    }
+    router.push(ROLE_REDIRECT[role ?? ''] ?? '/ortu')
     router.refresh()
   }
 

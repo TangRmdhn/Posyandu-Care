@@ -8,13 +8,19 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const role = user.app_metadata?.role as 'ortu' | 'kader' | 'bidan'
+  let role = user.app_metadata?.role as string | undefined
+  if (!role) {
+    const { data: profile } = await supabase
+      .from('profiles').select('role').eq('id', user.id).single()
+    role = profile?.role ?? undefined
+  }
+  const navRole = (role ?? 'ortu') as 'ortu' | 'kader' | 'bidan'
 
   return (
     <div className="min-h-screen bg-gray-50 max-w-md mx-auto relative">
       <AppHeader />
       <main className="pt-[48px] pb-16 min-h-screen">{children}</main>
-      <BottomNavBar role={role} />
+      <BottomNavBar role={navRole} />
     </div>
   )
 }

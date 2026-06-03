@@ -10,6 +10,12 @@ export default async function Home() {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) redirect('/login')
-  const role = user.app_metadata?.role as string
-  redirect(ROLE_DASHBOARDS[role] ?? '/login')
+
+  let role = user.app_metadata?.role as string | undefined
+  if (!role) {
+    const { data: profile } = await supabase
+      .from('profiles').select('role').eq('id', user.id).single()
+    role = profile?.role ?? undefined
+  }
+  redirect(ROLE_DASHBOARDS[role ?? ''] ?? '/ortu')
 }

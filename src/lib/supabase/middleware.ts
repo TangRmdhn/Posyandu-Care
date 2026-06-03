@@ -27,5 +27,17 @@ export async function updateSession(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  return { supabaseResponse, user }
+  // Role lives in app_metadata for staff (kader/bidan) but self-registered
+  // ortu only has it in profiles — fall back to that.
+  let role = (user?.app_metadata?.role as string | undefined) ?? undefined
+  if (user && !role) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+    role = profile?.role ?? undefined
+  }
+
+  return { supabaseResponse, user, role }
 }
