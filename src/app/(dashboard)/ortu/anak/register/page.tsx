@@ -1,11 +1,61 @@
-import { registerAnak } from '@/app/actions/anak.actions'
+'use client'
 
-async function submitAnak(formData: FormData) {
-  'use server'
-  await registerAnak(formData)
-}
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 
 export default function RegisterAnakPage() {
+  const router = useRouter()
+  const supabase = createClient()
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setError(null)
+    setLoading(true)
+
+    const fd = new FormData(e.currentTarget)
+    const nik = String(fd.get('nik') ?? '')
+    if (!/^\d{16}$/.test(nik)) {
+      setError('NIK harus 16 digit angka.')
+      setLoading(false)
+      return
+    }
+
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { router.push('/login'); return }
+
+    // VR-02: NIK must be unique
+    const { data: existing } = await supabase
+      .from('anak').select('id').eq('nik', nik).maybeSingle()
+    if (existing) {
+      setError('NIK ini sudah terdaftar di sistem.')
+      setLoading(false)
+      return
+    }
+
+    const { error: insErr } = await supabase.from('anak').insert({
+      id_ortu: user.id,
+      nama_anak: String(fd.get('nama_anak') ?? ''),
+      nik,
+      tgl_lahir: String(fd.get('tgl_lahir') ?? ''),
+      tempat_lahir: String(fd.get('tempat_lahir') ?? ''),
+      jenis_kelamin: String(fd.get('jenis_kelamin') ?? ''),
+      rt: String(fd.get('rt') ?? ''),
+      rw: String(fd.get('rw') ?? ''),
+    })
+
+    if (insErr) {
+      setError(insErr.message)
+      setLoading(false)
+      return
+    }
+
+    router.push('/ortu')
+    router.refresh()
+  }
+
   return (
     <div className="px-4 py-6 max-w-md mx-auto">
       <div className="flex items-center gap-3 mb-5">
@@ -16,7 +66,7 @@ export default function RegisterAnakPage() {
         </div>
       </div>
 
-      <form action={submitAnak} className="space-y-[10px]">
+      <form onSubmit={handleSubmit} className="space-y-[10px]">
         <div className="flex justify-center py-3">
           <label className="cursor-pointer">
             <div className="w-20 h-20 rounded-full border-2 border-dashed border-brand-teal
@@ -39,7 +89,7 @@ export default function RegisterAnakPage() {
 
         <div>
           <label className="text-xs text-gray-500 block mb-1">NIK Anak</label>
-          <input name="nik" type="text" placeholder="16 digit NIK" maxLength={16} required
+          <input name="nik" type="text" inputMode="numeric" placeholder="16 digit NIK" maxLength={16} required
             className="w-full border border-gray-300 rounded-btn px-3 py-2.5 text-sm
                        focus:outline-none focus:ring-2 focus:ring-brand-blue" />
         </div>
@@ -60,10 +110,10 @@ export default function RegisterAnakPage() {
 
         <div>
           <label className="text-xs text-gray-500 block mb-1">Jenis Kelamin</label>
-          <select name="jenis_kelamin" required
+          <select name="jenis_kelamin" required defaultValue=""
             className="w-full border border-gray-300 rounded-btn px-3 py-2.5 text-sm
                        focus:outline-none focus:ring-2 focus:ring-brand-blue bg-white">
-            <option value="">Pilih Jenis Kelamin</option>
+            <option value="" disabled>Pilih Jenis Kelamin</option>
             <option value="L">Laki-laki</option>
             <option value="P">Perempuan</option>
           </select>
@@ -84,11 +134,13 @@ export default function RegisterAnakPage() {
           </div>
         </div>
 
-        <button type="submit"
+        {error && <p className="text-xs text-red-500 bg-red-50 p-2 rounded-btn">{error}</p>}
+
+        <button type="submit" disabled={loading}
           className="w-full bg-brand-teal text-white rounded-btn py-3 text-sm font-medium
-                     mt-2 flex items-center justify-center gap-2"
+                     mt-2 flex items-center justify-center gap-2 disabled:opacity-60"
           style={{ height: '48px' }}>
-          ✓ Selesai
+          {loading ? 'Menyimpan...' : '✓ Selesai'}
         </button>
       </form>
     </div>
