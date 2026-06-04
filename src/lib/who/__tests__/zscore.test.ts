@@ -4,8 +4,16 @@ import { lookupLMS } from '../loadTable'
 import { WFA, HFA, WFL, WFH } from '../tables'
 import { assessGrowth } from '../index'
 import { classifyIndicator } from '../classify'
-import type { WhoTable } from '../types'
+import type { LMS, WhoTable } from '../types'
 import sdLines from './fixtures/who_sd_lines.json'
+
+interface SdLine {
+  table: string
+  indexedBy: string
+  x: number
+  lms: LMS
+  sd: Record<string, number>
+}
 
 const ALL_TABLES: WhoTable[] = [WFA.L, WFA.P, HFA.L, HFA.P, WFL.L, WFL.P, WFH.L, WFH.P]
 
@@ -44,10 +52,10 @@ describe('matches WHO published −3..+3 SD reference lines', () => {
   // asserted: rounding amplifies to ~0.25 z at the skewed tails. The round-trip
   // test above already pins zFromLMS↔valueFromZ to ±1e-6.)
   it('valueFromZ reproduces WHO published SD values within rounding', () => {
-    for (const f of sdLines as any[]) {
+    for (const f of sdLines as SdLine[]) {
       for (const [z, published] of Object.entries(f.sd)) {
         const got = valueFromZ(Number(z), f.lms)
-        expect(Math.abs(got - (published as number))).toBeLessThanOrEqual(0.06)
+        expect(Math.abs(got - published)).toBeLessThanOrEqual(0.06)
       }
     }
   })
