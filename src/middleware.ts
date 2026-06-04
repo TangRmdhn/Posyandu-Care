@@ -7,6 +7,7 @@ const ROLE_DASHBOARDS: Record<string, string> = {
   ortu:   '/ortu',
   kader:  '/kader',
   bidan:  '/bidan',
+  admin:  '/admin',
 }
 
 export async function middleware(request: NextRequest) {

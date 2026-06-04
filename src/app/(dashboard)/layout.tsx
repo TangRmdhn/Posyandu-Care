@@ -1,20 +1,13 @@
-import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { AppHeader } from '@/components/shared/AppHeader'
 import { BottomNavBar } from '@/components/shared/BottomNavBar'
+import { getCurrentUserWithRole, type Role } from '@/lib/auth/role'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { user, role } = await getCurrentUserWithRole()
   if (!user) redirect('/login')
 
-  let role = user.app_metadata?.role as string | undefined
-  if (!role) {
-    const { data: profile } = await supabase
-      .from('profiles').select('role').eq('id', user.id).single()
-    role = profile?.role ?? undefined
-  }
-  const navRole = (role ?? 'ortu') as 'ortu' | 'kader' | 'bidan'
+  const navRole = (role ?? 'ortu') as Role
 
   return (
     <div className="min-h-screen bg-gray-50 max-w-md mx-auto relative">

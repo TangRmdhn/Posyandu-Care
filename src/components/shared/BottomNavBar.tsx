@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { HomeIcon, CalendarIcon, BookOpenIcon, ActivityIcon, UserIcon } from 'lucide-react'
+import { HomeIcon, CalendarIcon, BookOpenIcon, ActivityIcon, UserIcon, UsersIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 type NavItem = {
@@ -29,13 +29,20 @@ const BIDAN_NAV: NavItem[] = [
   { href: '/bidan/profil',  label: 'Profil',    icon: UserIcon },
 ]
 
+const ADMIN_NAV: NavItem[] = [
+  { href: '/admin',          label: 'Beranda',  icon: HomeIcon },
+  { href: '/admin/jadwal',   label: 'Jadwal',   icon: CalendarIcon },
+  { href: '/admin/pengguna', label: 'Pengguna', icon: UsersIcon },
+]
+
 const ROLE_NAV: Record<string, NavItem[]> = {
   ortu:  ORTU_NAV,
   kader: KADER_NAV,
   bidan: BIDAN_NAV,
+  admin: ADMIN_NAV,
 }
 
-export function BottomNavBar({ role }: { role: 'ortu' | 'kader' | 'bidan' }) {
+export function BottomNavBar({ role }: { role: 'ortu' | 'kader' | 'bidan' | 'admin' }) {
   const pathname = usePathname()
   const items = ROLE_NAV[role] ?? ORTU_NAV
 
