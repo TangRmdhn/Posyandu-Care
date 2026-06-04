@@ -70,6 +70,33 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({ success: true, reservasi }, { status: 201 })
 }
 
+// PATCH /api/reservasi — cancel own reservation (quota rolls back via DB trigger)
+export async function PATCH(request: NextRequest) {
+  const supabase = createClient()
+
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (authError || !user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const { id, status } = await request.json()
+  if (typeof id !== 'string' || status !== 'cancelled') {
+    return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
+  }
+
+  // RLS also scopes to the owner; the explicit id_ortu filter is defence in depth.
+  const { error } = await supabase
+    .from('reservasi')
+    .update({ status: 'cancelled' })
+    .eq('id', id)
+    .eq('id_ortu', user.id)
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+  return NextResponse.json({ success: true })
+}
+
 // GET /api/reservasi — list reservations for the current user
 export async function GET() {
   const supabase = createClient()
