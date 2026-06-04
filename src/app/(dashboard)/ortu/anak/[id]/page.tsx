@@ -23,11 +23,10 @@ export default async function AnakDetailPage({ params }: { params: { id: string 
 
   const latest = pemeriksaanList?.[pemeriksaanList.length - 1]
 
-  const chartData = pemeriksaanList?.map((p, idx) => ({
-    usia: idx + 1,
-    beratAnak: p.berat_badan ?? 0,
-    normal: 9.6,
-    trenNaik: 11.5,
+  const measurements = pemeriksaanList?.map((p) => ({
+    tgl_pemeriksaan: p.tgl_pemeriksaan,
+    berat_badan: p.berat_badan,
+    tinggi_badan: p.tinggi_badan,
   })) ?? []
 
   return (
@@ -44,7 +43,13 @@ export default async function AnakDetailPage({ params }: { params: { id: string 
         lingkarKepala={latest?.lingkar_kepala}
       />
 
-      {chartData.length > 0 && <GrowthChart data={chartData} />}
+      {measurements.length > 0 && (
+        <GrowthChart
+          sex={anak.jenis_kelamin as 'L' | 'P'}
+          tglLahir={anak.tgl_lahir}
+          measurements={measurements}
+        />
+      )}
 
       <div className="bg-white rounded-card p-4 shadow-sm border border-gray-100 mx-0">
         <p className="text-sm font-semibold text-gray-700 mb-3">Riwayat Pemeriksaan</p>
