@@ -5,7 +5,19 @@ import { registerAnakSchema } from '@/lib/validations/anak.schema'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-export async function registerAnak(formData: FormData) {
+export interface RegisterAnakState {
+  error: string | null
+}
+
+/**
+ * Single validated write path for child registration (INT-1).
+ * Used with React `useFormState` from the register page — the client no longer
+ * inserts directly; all validation + the uniqueness check happen server-side.
+ */
+export async function registerAnak(
+  _prev: RegisterAnakState,
+  formData: FormData
+): Promise<RegisterAnakState> {
   const supabase = createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -23,10 +35,11 @@ export async function registerAnak(formData: FormData) {
 
   const result = registerAnakSchema.safeParse(rawData)
   if (!result.success) {
-    return { error: result.error.flatten().fieldErrors }
+    const firstErr = Object.values(result.error.flatten().fieldErrors)[0]?.[0]
+    return { error: firstErr ?? 'Data tidak valid. Periksa kembali isian Anda.' }
   }
 
-  // VR-02: Check if NIK already registered
+  // VR-02: NIK must be unique
   const { data: existing } = await supabase
     .from('anak')
     .select('id')
@@ -34,14 +47,14 @@ export async function registerAnak(formData: FormData) {
     .maybeSingle()
 
   if (existing) {
-    return { error: { nik: ['This child is already registered in the system.'] } }
+    return { error: 'NIK ini sudah terdaftar di sistem.' }
   }
 
   const { error } = await supabase
     .from('anak')
     .insert({ ...result.data, id_ortu: user.id })
 
-  if (error) return { error: { _form: [error.message] } }
+  if (error) return { error: error.message }
 
   revalidatePath('/ortu')
   redirect('/ortu')
