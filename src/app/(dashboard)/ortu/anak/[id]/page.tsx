@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { HealthStatsCard } from '@/components/ortu/HealthStatsCard'
 import { GrowthChart } from '@/components/ortu/GrowthChart'
+import { ImmunizationList } from '@/components/shared/ImmunizationList'
+import { loadImmunizationRows } from '@/lib/immunization.server'
 import { getStatusColor, formatDate } from '@/lib/utils'
 import { notFound } from 'next/navigation'
 
@@ -29,6 +31,8 @@ export default async function AnakDetailPage({ params }: { params: { id: string 
     tinggi_badan: p.tinggi_badan,
   })) ?? []
 
+  const imunisasiRows = await loadImmunizationRows(anak.id, anak.tgl_lahir)
+
   return (
     <div className="px-4 py-6 space-y-4">
       <div className="flex items-center gap-3">
@@ -50,6 +54,8 @@ export default async function AnakDetailPage({ params }: { params: { id: string 
           measurements={measurements}
         />
       )}
+
+      <ImmunizationList rows={imunisasiRows} canRecord={false} idAnak={anak.id} />
 
       <div className="bg-white rounded-card p-4 shadow-sm border border-gray-100 mx-0">
         <p className="text-sm font-semibold text-gray-700 mb-3">Riwayat Pemeriksaan</p>

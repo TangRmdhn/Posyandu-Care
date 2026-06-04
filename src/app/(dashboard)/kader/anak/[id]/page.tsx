@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { ChildBiodataCard } from '@/components/kader/ChildBiodataCard'
 import { HealthStatsCard } from '@/components/ortu/HealthStatsCard'
+import { ImmunizationList } from '@/components/shared/ImmunizationList'
+import { loadImmunizationRows } from '@/lib/immunization.server'
 import { formatDate, getAgeString } from '@/lib/utils'
 import { notFound } from 'next/navigation'
 
@@ -14,6 +16,8 @@ export default async function KaderAnakDetailPage({ params }: { params: { id: st
     .single()
 
   if (!anak) notFound()
+
+  const imunisasiRows = await loadImmunizationRows(anak.id, anak.tgl_lahir)
 
   const { data: latest } = await supabase
     .from('pemeriksaan')
@@ -50,6 +54,8 @@ export default async function KaderAnakDetailPage({ params }: { params: { id: st
           lingkarKepala={latest.lingkar_kepala}
         />
       )}
+
+      <ImmunizationList rows={imunisasiRows} canRecord idAnak={anak.id} />
     </div>
   )
 }
