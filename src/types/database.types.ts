@@ -397,6 +397,47 @@ export type Database = {
           },
         ]
       }
+      notifikasi: {
+        Row: {
+          created_at: string | null
+          dedupe_key: string | null
+          dibaca: boolean
+          id: string
+          id_ortu: string
+          judul: string
+          pesan: string
+          tipe: string
+        }
+        Insert: {
+          created_at?: string | null
+          dedupe_key?: string | null
+          dibaca?: boolean
+          id?: string
+          id_ortu: string
+          judul: string
+          pesan: string
+          tipe: string
+        }
+        Update: {
+          created_at?: string | null
+          dedupe_key?: string | null
+          dibaca?: boolean
+          id?: string
+          id_ortu?: string
+          judul?: string
+          pesan?: string
+          tipe?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifikasi_id_ortu_fkey"
+            columns: ["id_ortu"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pemeriksaan: {
         Row: {
           berat_badan: number | null

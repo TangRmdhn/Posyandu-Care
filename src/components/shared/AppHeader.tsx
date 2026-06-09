@@ -1,6 +1,7 @@
 'use client'
 
 import { BellIcon, LogOutIcon } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { LargeTextToggle } from './LargeTextToggle'
@@ -29,9 +30,9 @@ export function AppHeader({ title = 'Posyandu Care', wide = false }: AppHeaderPr
       <span className="font-semibold text-base text-brand-teal">{title}</span>
       <div className="flex items-center gap-1">
         <LargeTextToggle />
-        <button aria-label="Notifikasi" className="p-1.5 rounded-full hover:bg-gray-100 transition-colors">
+        <Link href="/ortu/notifikasi" aria-label="Notifikasi" className="p-1.5 rounded-full hover:bg-gray-100 transition-colors">
           <BellIcon className="w-5 h-5 text-gray-400" aria-hidden />
-        </button>
+        </Link>
         <button
           onClick={handleLogout}
           aria-label="Keluar"
