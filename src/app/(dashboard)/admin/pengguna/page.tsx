@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserWithRole } from '@/lib/auth/role'
 import { AssignRoleForm } from '@/components/admin/AssignRoleForm'
+import { CreateStaffForm } from '@/components/admin/CreateStaffForm'
 
 export default async function AdminPenggunaPage() {
   const { role } = await getCurrentUserWithRole()
@@ -16,6 +17,8 @@ export default async function AdminPenggunaPage() {
   return (
     <div className="px-4 py-6 space-y-4">
       <h2 className="text-base font-semibold text-gray-900">Kelola Pengguna</h2>
+
+      <CreateStaffForm />
 
       <AssignRoleForm />
 
