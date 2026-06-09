@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { ChildBiodataCard } from '@/components/kader/ChildBiodataCard'
 import { HealthStatsCard } from '@/components/ortu/HealthStatsCard'
 import { ImmunizationList } from '@/components/shared/ImmunizationList'
+import { EditMeasurementForm } from '@/components/kader/EditMeasurementForm'
 import { loadImmunizationRows } from '@/lib/immunization.server'
 import { formatDate, getAgeString } from '@/lib/utils'
 import { notFound } from 'next/navigation'
@@ -53,6 +54,10 @@ export default async function KaderAnakDetailPage({ params }: { params: { id: st
           lila={latest.lingkar_lengan_atas}
           lingkarKepala={latest.lingkar_kepala}
         />
+      )}
+
+      {latest && !latest.is_validated && (
+        <EditMeasurementForm id={latest.id} beratBadan={latest.berat_badan} tinggiBadan={latest.tinggi_badan} />
       )}
 
       <ImmunizationList rows={imunisasiRows} canRecord idAnak={anak.id} />

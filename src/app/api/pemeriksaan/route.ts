@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { pemeriksaanSchema, saranMedisSchema } from '@/lib/validations/pemeriksaan.schema'
 import { calculateNutritionalStatus } from '@/lib/zscore'
+import { logAudit } from '@/lib/audit'
 
 // POST /api/pemeriksaan — Kader submits anthropometry data
 export async function POST(request: NextRequest) {
@@ -81,6 +82,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
+  await logAudit({
+    actor_id: user.id,
+    actor_role: (user.app_metadata?.role as string) ?? 'kader',
+    action: 'insert',
+    entity: 'pemeriksaan',
+    entity_id: pemeriksaan.id,
+    diff: { berat_badan, tinggi_badan, status_gizi: zscoreResult.status_gizi },
+  })
+
   // Mark reservasi reviewed
   if (id_reservasi) {
     await supabase
@@ -137,6 +147,15 @@ export async function PATCH(request: NextRequest) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
+
+  await logAudit({
+    actor_id: user.id,
+    actor_role: 'bidan',
+    action: 'update',
+    entity: 'pemeriksaan',
+    entity_id: id_pemeriksaan,
+    diff: { validated: true, rujukan: rujukan ?? false },
+  })
 
   return NextResponse.json({ success: true, data })
 }

@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserWithRole } from '@/lib/auth/role'
+import { logAudit } from '@/lib/audit'
 
 /** IMM-2: staff record a vaccine dose for a child (idempotent per vaccine). */
 export async function recordImunisasi(formData: FormData): Promise<void> {
@@ -21,6 +22,15 @@ export async function recordImunisasi(formData: FormData): Promise<void> {
       { id_anak, id_jenis, tgl_pemberian, id_pemberi: user.id },
       { onConflict: 'id_anak,id_jenis' }
     )
+
+  await logAudit({
+    actor_id: user.id,
+    actor_role: role,
+    action: 'insert',
+    entity: 'imunisasi_anak',
+    entity_id: id_anak,
+    diff: { id_jenis, tgl_pemberian },
+  })
 
   revalidatePath(`/kader/anak/${id_anak}`)
   revalidatePath(`/ortu/anak/${id_anak}`)

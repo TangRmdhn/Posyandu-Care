@@ -88,6 +88,14 @@ export default function RegisterAnakPage() {
           </div>
         </div>
 
+        <label className="flex items-start gap-2 pt-1">
+          <input type="checkbox" name="consent" required className="w-4 h-4 mt-0.5" />
+          <span className="text-[11px] text-gray-500 leading-snug">
+            Saya menyetujui data kesehatan anak saya dikumpulkan dan diproses oleh Posyandu
+            (kader, bidan, dan Puskesmas) untuk pemantauan tumbuh kembang, sesuai UU PDP.
+          </span>
+        </label>
+
         {state.error && (
           <p role="alert" className="text-xs text-red-500 bg-red-50 p-2 rounded-btn">{state.error}</p>
         )}
