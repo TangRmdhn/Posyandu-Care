@@ -1,36 +1,184 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Posyandu-Care 🩺
 
-## Getting Started
+Aplikasi web pemantauan kesehatan ibu & anak untuk Posyandu (Next.js + Supabase).
 
-First, run the development server:
+Panduan ini ditulis untuk **pemula total** — belum pernah install apa pun.
+Ikuti dari atas ke bawah, satu per satu. Perkiraan waktu: **15–20 menit**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+> Contoh perintah ditujukan untuk **Windows**. Catatan untuk Mac/Linux ada di tiap langkah.
+
+---
+
+## 1. Apa yang akan kita lakukan?
+
+1. Install 2 program: **Node.js** dan **Git**.
+2. Ambil kode proyek ini ke komputer.
+3. Isi 1 file pengaturan (`.env.local`).
+4. Jalankan aplikasi di komputer sendiri (`localhost:3000`).
+
+---
+
+## 2. Install Node.js (wajib)
+
+Node.js menjalankan aplikasinya.
+
+1. Buka: **https://nodejs.org**
+2. Klik tombol versi **LTS** (mis. "20.x.x LTS"). Unduh.
+3. Buka file yang terunduh, klik **Next → Next → Install** (biarkan semua default).
+4. Selesai.
+
+**Cek berhasil:** buka **PowerShell** (tekan tombol Windows, ketik `powershell`, Enter), lalu ketik:
+
+```powershell
+node -v
+npm -v
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Kalau muncul angka versi (mis. `v20.11.0` dan `10.2.4`), berarti **berhasil**.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+> Mac: unduh installer yang sama dari nodejs.org, atau `brew install node`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 3. Install Git (wajib)
 
-To learn more about Next.js, take a look at the following resources:
+Git dipakai untuk mengambil kode.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Buka: **https://git-scm.com/download/win** (otomatis mulai unduh).
+2. Jalankan installer → klik **Next** terus sampai **Install** (default sudah aman).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Cek berhasil:**
 
-## Deploy on Vercel
+```powershell
+git --version
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Kalau muncul `git version 2.xx.x`, **berhasil**.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> Mac: `git` biasanya sudah ada. Cek dengan `git --version`.
+
+---
+
+## 4. Ambil kode proyek
+
+Di PowerShell, pindah ke folder tempat menyimpan (mis. Documents), lalu unduh kode:
+
+```powershell
+cd $HOME\Documents
+git clone https://github.com/TangRmdhn/Posyandu-Care.git
+cd Posyandu-Care
+```
+
+> **Tanpa Git?** Buka https://github.com/TangRmdhn/Posyandu-Care → tombol hijau
+> **Code → Download ZIP** → ekstrak → buka foldernya di PowerShell dengan `cd`.
+
+---
+
+## 5. Buat file pengaturan `.env.local`
+
+Aplikasi butuh kunci koneksi ke database (Supabase). Buat file bernama
+**`.env.local`** di dalam folder proyek, isinya:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://leemynhujnwjugsivtyb.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=tempel_anon_key_di_sini
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+SUPABASE_SERVICE_ROLE_KEY=tempel_service_role_key_di_sini
+```
+
+**Cara dapat nilainya** (butuh akses ke project Supabase):
+
+1. Buka **https://supabase.com/dashboard/project/leemynhujnwjugsivtyb/settings/api**
+2. Salin **Project URL** → ke `NEXT_PUBLIC_SUPABASE_URL`.
+3. Salin **anon public** key → ke `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+4. Salin **service_role secret** key → ke `SUPABASE_SERVICE_ROLE_KEY`.
+
+Cara cepat membuat file lewat PowerShell (lalu edit nilainya pakai Notepad):
+
+```powershell
+notepad .env.local
+```
+
+> ⚠️ **Jangan pernah** membagikan `service_role` key ke publik / commit ke GitHub.
+> File `.env.local` sudah otomatis diabaikan Git.
+
+---
+
+## 6. Install kebutuhan aplikasi
+
+Sekali saja. Di folder proyek:
+
+```powershell
+npm install
+```
+
+Tunggu sampai selesai (beberapa menit, butuh internet).
+
+---
+
+## 7. Jalankan aplikasinya 🎉
+
+```powershell
+npm run dev
+```
+
+Tunggu sampai muncul tulisan **`Ready`**, lalu buka browser ke:
+
+**http://localhost:3000**
+
+Untuk **berhenti**: kembali ke PowerShell, tekan **Ctrl + C**.
+
+---
+
+## 8. Masuk ke aplikasi
+
+- **Orang tua:** daftar akun baru lewat tombol **Registrasi** di halaman depan.
+- **Admin:** akun `admin@admin.com` (minta password ke pemilik project).
+  Dari `/admin` bisa membuat akun **bidan/kader/admin** baru
+  (butuh `SUPABASE_SERVICE_ROLE_KEY` terisi di langkah 5).
+
+---
+
+## 9. Perintah lain (opsional)
+
+| Perintah | Fungsi |
+|----------|--------|
+| `npm run dev` | Jalankan mode pengembangan (localhost) |
+| `npm run build` | Build versi produksi |
+| `npm start` | Jalankan hasil build |
+| `npm test` | Jalankan uji otomatis |
+| `npm run lint` | Cek gaya kode |
+| `npm run typecheck` | Cek tipe TypeScript |
+
+---
+
+## 10. Kalau ada masalah (Troubleshooting)
+
+- **`npm: command not found` / `node: not recognized`** → Node.js belum terpasang
+  atau PowerShell belum di-restart. Tutup PowerShell, buka lagi, ulangi langkah 2.
+- **Halaman error / tidak bisa login** → cek `.env.local` sudah benar (langkah 5)
+  dan jalankan ulang `npm run dev`.
+- **"service role key tidak ada"** saat admin membuat akun → `SUPABASE_SERVICE_ROLE_KEY`
+  belum diisi di `.env.local` (atau belum di-set di Vercel saat online).
+- **Port 3000 dipakai** → tutup aplikasi lain di port itu, atau jalankan
+  `npm run dev -- -p 3001` lalu buka http://localhost:3001.
+- **`npm install` gagal** → pastikan internet aktif, lalu ulangi.
+
+---
+
+## 11. Online / Deploy (opsional, lanjutan)
+
+Aplikasi ini bisa di-online-kan gratis via **Vercel**:
+hubungkan repo GitHub ini ke Vercel, masukkan 4 variabel dari langkah 5 di
+**Settings → Environment Variables**, lalu Deploy. Detail di `RUNBOOK.md`.
+
+---
+
+## 12. Mau tahu lebih dalam?
+
+- `PRESENTASI_IMPLEMENTASI.md` — ringkasan fitur & checklist (Bahasa Indonesia).
+- `bigplan/` — rencana lengkap menuju produksi.
+- `RUNBOOK.md` — panduan operasional.
+- `CLAUDE.md` — catatan teknis untuk developer.
+
+Selamat mencoba! 🚀
