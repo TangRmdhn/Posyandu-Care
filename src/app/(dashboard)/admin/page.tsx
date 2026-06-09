@@ -54,6 +54,9 @@ export default async function AdminDashboardPage() {
         <Link href="/admin/pengguna" className="block bg-white border border-gray-200 text-gray-700 rounded-btn py-3 text-sm font-medium text-center">
           Kelola Pengguna
         </Link>
+        <Link href="/admin/edukasi" className="block bg-white border border-gray-200 text-gray-700 rounded-btn py-3 text-sm font-medium text-center">
+          Kelola Edukasi
+        </Link>
       </div>
     </div>
   )
