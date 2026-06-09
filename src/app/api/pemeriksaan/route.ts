@@ -116,7 +116,7 @@ export async function PATCH(request: NextRequest) {
     )
   }
 
-  const { id_pemeriksaan, saran_medis, pemberian_bantuan_medis } = result.data
+  const { id_pemeriksaan, saran_medis, pemberian_bantuan_medis, rujukan, rujukan_alasan } = result.data
 
   const { data, error } = await supabase
     .from('pemeriksaan')
@@ -126,6 +126,9 @@ export async function PATCH(request: NextRequest) {
       id_bidan: user.id,
       is_validated: true,
       validated_at: new Date().toISOString(),
+      rujukan: rujukan ?? false,
+      rujukan_alasan: rujukan ? (rujukan_alasan ?? null) : null,
+      rujukan_status: rujukan ? 'pending' : 'none',
     })
     .eq('id', id_pemeriksaan)
     .select()

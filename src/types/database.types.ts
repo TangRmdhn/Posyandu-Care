@@ -410,6 +410,9 @@ export type Database = {
           lingkar_kepala: number | null
           lingkar_lengan_atas: number | null
           pemberian_bantuan_medis: string | null
+          rujukan: boolean
+          rujukan_alasan: string | null
+          rujukan_status: string
           saran_medis: string | null
           status_bb_tb: string | null
           status_bb_u: string | null
@@ -437,6 +440,9 @@ export type Database = {
           lingkar_kepala?: number | null
           lingkar_lengan_atas?: number | null
           pemberian_bantuan_medis?: string | null
+          rujukan?: boolean
+          rujukan_alasan?: string | null
+          rujukan_status?: string
           saran_medis?: string | null
           status_bb_tb?: string | null
           status_bb_u?: string | null
@@ -464,6 +470,9 @@ export type Database = {
           lingkar_kepala?: number | null
           lingkar_lengan_atas?: number | null
           pemberian_bantuan_medis?: string | null
+          rujukan?: boolean
+          rujukan_alasan?: string | null
+          rujukan_status?: string
           saran_medis?: string | null
           status_bb_tb?: string | null
           status_bb_u?: string | null

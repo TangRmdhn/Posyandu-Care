@@ -19,6 +19,8 @@ export const saranMedisSchema = z.object({
   id_pemeriksaan: z.string().uuid(),
   saran_medis: z.string().min(10, 'Medical advice must be at least 10 characters'),
   pemberian_bantuan_medis: z.string().optional(),
+  rujukan: z.boolean().optional(),
+  rujukan_alasan: z.string().optional(),
 })
 
 export type PemeriksaanInput = z.infer<typeof pemeriksaanSchema>
