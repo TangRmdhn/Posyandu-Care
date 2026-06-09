@@ -8,10 +8,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!user) redirect('/login')
 
   const navRole = (role ?? 'ortu') as Role
+  const wide = navRole === 'admin' || navRole === 'bidan'
 
   return (
-    <div className="min-h-screen bg-gray-50 max-w-md mx-auto relative">
-      <AppHeader />
+    <div className={`min-h-screen bg-gray-50 mx-auto relative ${wide ? 'max-w-md lg:max-w-3xl' : 'max-w-md'}`}>
+      <AppHeader wide={wide} />
       <main className="pt-[48px] pb-16 min-h-screen">{children}</main>
       <BottomNavBar role={navRole} />
     </div>

@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* UX-3: inclusive large-text mode — scales the rem base so the whole UI grows. */
+html.bigger-text {
+  font-size: 18.5px;
+}
+
 @layer utilities {
   .scrollbar-none {
     -ms-overflow-style: none;

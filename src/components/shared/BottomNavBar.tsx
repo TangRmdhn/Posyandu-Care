@@ -45,10 +45,11 @@ const ROLE_NAV: Record<string, NavItem[]> = {
 export function BottomNavBar({ role }: { role: 'ortu' | 'kader' | 'bidan' | 'admin' }) {
   const pathname = usePathname()
   const items = ROLE_NAV[role] ?? ORTU_NAV
+  const wide = role === 'admin' || role === 'bidan'
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto
-                    bg-white border-t border-gray-200 flex items-center justify-around h-16">
+    <nav className={`fixed bottom-0 left-0 right-0 z-50 mx-auto ${wide ? 'max-w-md lg:max-w-3xl' : 'max-w-md'}
+                    bg-white border-t border-gray-200 flex items-center justify-around h-16`}>
       {items.map(({ href, label, icon: Icon }) => {
         const isActive = pathname === href || pathname.startsWith(href + '/')
         return (
