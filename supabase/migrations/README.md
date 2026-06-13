@@ -8,6 +8,7 @@ Forward-only, ordered. Apply on a branch/staging project first, run
 | 0a | `20260603050443_init_schema.sql` | base | extension `uuid-ossp`; base tables (`profiles`, `kader`, `bidan_desa`, `anak`, `jadwal`, `reservasi`, `pemeriksaan`, `laporan`); `handle_new_user` + `handle_new_reservasi` triggers |
 | 0b | `20260603050516_rls_policies.sql` | base | enable RLS on base tables; initial `get_my_role` (JWT-based); per-role policies; seed `jadwal` sample rows |
 | 0c | `20260603105642_get_my_role_from_profiles.sql` | base | `get_my_role` reads role from `profiles` (SECURITY DEFINER) instead of JWT app_metadata |
+| 0d | `20260603110000_storage_child_photos_bucket.sql` | base | create `child-photos` storage bucket (idempotent); so the later lockdown migration has a bucket to harden |
 | 1 | `20260604090000_function_hardening.sql` | SEC-3 | pin `search_path=''` on the 3 functions; revoke RPC execute (trigger fns from anon+authenticated, `get_my_role` from anon) |
 | 2 | `20260604090100_schema_evolution.sql` | ADM-1, RES-1, ADM-2, PRIV, ZS-2 | `admin` role; `cancelled` status + quota-decrement trigger; jadwal lifecycle; anak soft-delete; per-indicator status columns |
 | 3 | `20260604090200_rls_missing_tables.sql` | SEC-2 | RLS policies for `kader` / `bidan_desa` / `laporan` |

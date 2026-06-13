@@ -174,6 +174,44 @@ hubungkan repo GitHub ini ke Vercel, masukkan 4 variabel dari langkah 5 di
 
 ---
 
+## 11b. Pakai database Supabase sendiri (opsional, lanjutan)
+
+Langkah 5–8 di atas memakai database milik pemilik project. Kalau kamu mau
+pakai **project Supabase sendiri** (database kosong), ikuti ini:
+
+1. Buat project baru di **https://supabase.com/dashboard**, catat **Project Ref**
+   (mis. `abcdefghijklmnop`).
+2. Isi `.env.local` (langkah 5) dengan URL + key dari **project barumu**, bukan
+   ref bawaan.
+3. Pasang Supabase CLI lalu terapkan seluruh skema database:
+
+   ```powershell
+   npm install -g supabase
+   supabase login
+   supabase link --project-ref REF_PROJECT_KAMU
+   supabase db push
+   ```
+
+   `db push` menjalankan semua file di `supabase/migrations/` secara urut —
+   tabel, RLS, trigger, bucket `child-photos`, sampai notifikasi. Database kosong
+   langsung jadi siap pakai.
+
+4. **Buat admin pertama** (database baru belum punya akun staff). Daftar satu
+   akun lewat tombol **Registrasi** di aplikasi (jadi role `ortu`), lalu naikkan
+   ke `admin` via **Dashboard → SQL Editor**:
+
+   ```sql
+   update public.profiles set role = 'admin' where email = 'email_kamu@contoh.com';
+   ```
+
+   Setelah itu login, buka `/admin`, dan buat akun **bidan/kader/admin** lain
+   dari sana.
+
+> Catatan: `next.config.mjs` membaca `NEXT_PUBLIC_SUPABASE_URL` dari env, jadi
+> host project barumu otomatis terpakai (ref bawaan hanya cadangan).
+
+---
+
 ## 12. Mau tahu lebih dalam?
 
 - `PRESENTASI_IMPLEMENTASI.md` — ringkasan fitur & checklist (Bahasa Indonesia).
