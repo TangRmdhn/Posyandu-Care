@@ -37,6 +37,7 @@ export async function createJadwal(_prev: JadwalState, formData: FormData): Prom
   if (error) return { error: error.message }
 
   revalidatePath('/admin/jadwal')
+  revalidatePath('/bidan/jadwal')
   return { error: null, ok: true }
 }
 
@@ -51,4 +52,5 @@ export async function setJadwalStatus(formData: FormData): Promise<void> {
   const supabase = createClient()
   await supabase.from('jadwal').update({ status }).eq('id', id)
   revalidatePath('/admin/jadwal')
+  revalidatePath('/bidan/jadwal')
 }

@@ -25,6 +25,7 @@ const KADER_NAV: NavItem[] = [
 
 const BIDAN_NAV: NavItem[] = [
   { href: '/bidan',         label: 'Beranda',   icon: HomeIcon },
+  { href: '/bidan/jadwal',  label: 'Jadwal',    icon: CalendarIcon },
   { href: '/bidan/laporan', label: 'Aktivitas', icon: ActivityIcon },
   { href: '/bidan/profil',  label: 'Profil',    icon: UserIcon },
 ]
