@@ -56,8 +56,13 @@ export async function createStaffUser(_prev: AssignState, formData: FormData): P
   await admin.from('profiles').upsert({ id, role: parsed.data.role, nama: parsed.data.nama, email: parsed.data.email })
   if (parsed.data.role === 'kader') {
     await admin.from('kader').upsert({ id, nama_kader: parsed.data.nama, email: parsed.data.email })
+    await admin.from('bidan_desa').delete().eq('id', id)
   } else if (parsed.data.role === 'bidan') {
     await admin.from('bidan_desa').upsert({ id, nama_bidan: parsed.data.nama, email: parsed.data.email })
+    await admin.from('kader').delete().eq('id', id)
+  } else {
+    await admin.from('kader').delete().eq('id', id)
+    await admin.from('bidan_desa').delete().eq('id', id)
   }
 
   revalidatePath('/admin/pengguna')
@@ -114,8 +119,10 @@ export async function assignStaffRole(_prev: AssignState, formData: FormData): P
 
   if (parsed.data.role === 'kader') {
     await admin.from('kader').upsert({ id: target.id, nama_kader: parsed.data.nama, email: target.email ?? '' })
+    await admin.from('bidan_desa').delete().eq('id', target.id)
   } else {
     await admin.from('bidan_desa').upsert({ id: target.id, nama_bidan: parsed.data.nama, email: target.email ?? '' })
+    await admin.from('kader').delete().eq('id', target.id)
   }
 
   revalidatePath('/admin/pengguna')
