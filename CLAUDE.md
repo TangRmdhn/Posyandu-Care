@@ -18,7 +18,3 @@ Web-based Maternal & Child Health Monitoring system. Next.js 14 (App Router) + S
 ## Roles
 
 `ortu` (parent) → `/ortu`, `kader` (cadre) → `/kader`, `bidan` (midwife) → `/bidan`. Enforced by `src/middleware.ts` reading `app_metadata.role`.
-
-## Plan
-
-Full implementation plan in `plan/PART_00`–`PART_06`.

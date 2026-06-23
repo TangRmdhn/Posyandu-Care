@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { getCurrentUserWithRole } from '@/lib/auth/role'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { logAudit } from '@/lib/audit'
 
 const assignSchema = z.object({
   email: z.string().email('Email tidak valid'),
@@ -64,6 +65,37 @@ export async function createStaffUser(_prev: AssignState, formData: FormData): P
     await admin.from('kader').delete().eq('id', id)
     await admin.from('bidan_desa').delete().eq('id', id)
   }
+
+  revalidatePath('/admin/pengguna')
+  return { error: null, ok: true }
+}
+
+/** Admin permanently deletes a registered account (auth user + staff rows). */
+export async function deleteUser(_prev: AssignState, formData: FormData): Promise<AssignState> {
+  const { user, role: myRole } = await getCurrentUserWithRole()
+  if (myRole !== 'admin') return { error: 'Tidak diizinkan.' }
+
+  const targetId = String(formData.get('id') ?? '')
+  if (!targetId) return { error: 'ID pengguna tidak valid.' }
+  if (targetId === user?.id) return { error: 'Tidak bisa menghapus akun sendiri.' }
+
+  const admin = createAdminClient()
+  if (!admin) return { error: 'Konfigurasi server tidak lengkap (service role key tidak ada).' }
+
+  // Remove staff rows first; deleting the auth user cascades profiles via FK.
+  await admin.from('kader').delete().eq('id', targetId)
+  await admin.from('bidan_desa').delete().eq('id', targetId)
+
+  const { error } = await admin.auth.admin.deleteUser(targetId)
+  if (error) return { error: error.message }
+
+  await logAudit({
+    actor_id: user?.id ?? null,
+    actor_role: myRole,
+    action: 'delete',
+    entity: 'user',
+    entity_id: targetId,
+  })
 
   revalidatePath('/admin/pengguna')
   return { error: null, ok: true }

@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getCurrentUserWithRole } from '@/lib/auth/role'
 import { AssignRoleForm } from '@/components/admin/AssignRoleForm'
 import { CreateStaffForm } from '@/components/admin/CreateStaffForm'
+import { DeleteUserButton } from '@/components/admin/DeleteUserButton'
 
 export default async function AdminPenggunaPage() {
   const { role } = await getCurrentUserWithRole()
@@ -25,9 +26,12 @@ export default async function AdminPenggunaPage() {
       <section className="space-y-2">
         <h3 className="text-[13px] font-semibold text-gray-700">Bidan</h3>
         {(bidan ?? []).map((b) => (
-          <div key={b.id} className="bg-white rounded-card border border-gray-100 shadow-sm p-3">
-            <p className="text-sm text-gray-800">{b.nama_bidan}</p>
-            <p className="text-xs text-gray-500">{b.email}</p>
+          <div key={b.id} className="bg-white rounded-card border border-gray-100 shadow-sm p-3 flex items-start justify-between gap-3">
+            <div>
+              <p className="text-sm text-gray-800">{b.nama_bidan}</p>
+              <p className="text-xs text-gray-500">{b.email}</p>
+            </div>
+            <DeleteUserButton id={b.id} nama={b.nama_bidan} />
           </div>
         ))}
         {(!bidan || bidan.length === 0) && <p className="text-xs text-gray-400">Belum ada bidan.</p>}
@@ -36,9 +40,12 @@ export default async function AdminPenggunaPage() {
       <section className="space-y-2">
         <h3 className="text-[13px] font-semibold text-gray-700">Kader</h3>
         {(kader ?? []).map((k) => (
-          <div key={k.id} className="bg-white rounded-card border border-gray-100 shadow-sm p-3">
-            <p className="text-sm text-gray-800">{k.nama_kader}</p>
-            <p className="text-xs text-gray-500">{k.email}</p>
+          <div key={k.id} className="bg-white rounded-card border border-gray-100 shadow-sm p-3 flex items-start justify-between gap-3">
+            <div>
+              <p className="text-sm text-gray-800">{k.nama_kader}</p>
+              <p className="text-xs text-gray-500">{k.email}</p>
+            </div>
+            <DeleteUserButton id={k.id} nama={k.nama_kader} />
           </div>
         ))}
         {(!kader || kader.length === 0) && <p className="text-xs text-gray-400">Belum ada kader.</p>}
