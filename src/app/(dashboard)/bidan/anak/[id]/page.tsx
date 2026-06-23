@@ -197,7 +197,7 @@ export default function BidanAnakDetailPage({ params }: { params: { id: string }
       <div className="mx-4">
         <button
           onClick={handleValidate}
-          disabled={isSubmitting || saranMedis.trim().length < 10}
+          disabled={isSubmitting}
           className="w-full text-white rounded-btn py-3 text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-50"
           style={{ backgroundColor: '#00897B', height: '52px' }}
         >
