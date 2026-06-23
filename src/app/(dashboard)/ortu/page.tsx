@@ -33,18 +33,43 @@ export default async function OrtuDashboardPage() {
   }
 
   return (
-    <div className="space-y-4">
-      {anakList.map((anak) => (
-        <DashboardCard
-          key={anak.id}
-          namaOrtu={profile?.nama ?? 'Orang Tua'}
-          namaAnak={anak.nama_anak}
-          usiaLabel={getAgeString(anak.tgl_lahir)}
-          usiaSubLabel=""
-          fotoUrl={anak.foto_url}
-          anakId={anak.id}
-        />
-      ))}
+    <div className="px-4 pt-4 space-y-3">
+      <div>
+        <p className="text-xs text-gray-500">SELAMAT PAGI,</p>
+        <p className="text-lg font-bold text-gray-900">Halo, {profile?.nama ?? 'Orang Tua'}</p>
+      </div>
+
+      <div className="space-y-2">
+        {anakList.map((anak) => (
+          <DashboardCard
+            key={anak.id}
+            namaAnak={anak.nama_anak}
+            usiaLabel={getAgeString(anak.tgl_lahir)}
+            usiaSubLabel=""
+            fotoUrl={anak.foto_url}
+            anakId={anak.id}
+          />
+        ))}
+      </div>
+
+      <Link href="/ortu/anak/register">
+        <button
+          className="w-full border border-brand-teal text-brand-teal rounded-btn text-[14px]
+                     font-medium flex items-center justify-center gap-2 py-3"
+        >
+          + Tambah Anak
+        </button>
+      </Link>
+
+      <Link href="/ortu/reservasi">
+        <button
+          className="w-full bg-brand-teal text-white rounded-btn text-[14px] font-medium
+                     flex items-center justify-center gap-2 py-3"
+        >
+          <span className="text-lg leading-none">⊕</span>
+          Buat Reservasi
+        </button>
+      </Link>
     </div>
   )
 }
