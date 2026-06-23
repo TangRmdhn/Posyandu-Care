@@ -6,7 +6,6 @@ import { createClient } from '@/lib/supabase/client'
 
 export default function RegisterPage() {
   const router = useRouter()
-  const supabase = createClient()
   const [form, setForm] = useState({ nama: '', no_hp: '', email: '', password: '' })
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -14,6 +13,7 @@ export default function RegisterPage() {
   const handleRegister = async () => {
     setLoading(true)
     setError(null)
+    const supabase = createClient()
     const { error: err } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
